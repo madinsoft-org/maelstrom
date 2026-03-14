@@ -13,7 +13,9 @@ on:
 jobs:
   build-and-deploy-dev:
     if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[deploy]')
-    runs-on: [self-hosted, test-env]
+    runs-on:
+      group: maelstrom-runners
+      labels: self-hosted
 
     steps:
 
