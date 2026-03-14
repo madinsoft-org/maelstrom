@@ -1,0 +1,53 @@
+name: Build & Deploy Maelstrom dev
+
+env:
+  IMAGE_NAME: maelstrom
+  REPO_NAME: maelstrom
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build-and-deploy-dev:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[deploy]')
+    runs-on:
+      group: maelstrom-runners
+      labels: self-hosted
+
+    steps:
+
+
+      - name: Cleanup
+        run: rm -rf "$IMAGE_NAME"
+
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.0
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 1
+          path: ${{ env.IMAGE_NAME }}
+
+      - name: Get Git SHA
+        run: |
+          cd "$IMAGE_NAME"
+          echo "GIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Build Docker image locally
+        run: |
+          docker build -f "$IMAGE_NAME"/docker/Dockerfile -t $IMAGE_NAME:${GIT_SHA} "$IMAGE_NAME"
+
+      - name: Deploy stack with docker-compose.yaml
+        env:
+          DATABASE_URL: file:/data/dev.db
+          NEXTAUTH_URL: ${{ secrets.NEXTAUTH_URL }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
+          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+        run: |
+          docker stack deploy -c "$IMAGE_NAME"/docker/docker-compose.yml "$IMAGE_NAME"-stack

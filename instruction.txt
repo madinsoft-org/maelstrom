@@ -1,0 +1,39 @@
+je vais ajouter une configuration production avec volume persistant SQLite, incluant un docker-compose prêt à l’emploi et un démarrage qui initialise la DB au premier lancement.
+
+Je vais maintenant ajouter un entrypoint qui initialise la base SQLite dans un volume Docker, puis créer un docker-compose.prod.yml prêt à lancer en production.
+
+J’ai ajouté les fichiers prod + persistance SQLite. Je fais une vérification rapide des contenus pour te donner la commande exacte de lancement.
+
+Parfait, c’est prêt pour ton serveur Ubuntu distant avec persistance SQLite.
+
+Changements faits :
+
+Dockerfile production avec volume persistant : Dockerfile
+Script d’entrée qui initialise la DB au 1er démarrage : entrypoint.sh
+Compose production prêt à lancer : docker-compose.prod.yml
+Exemple d’env aligné sur SQLite persistant : .env.example
+Ce que ça garantit :
+
+La base SQLite est stockée dans un volume Docker (/data/dev.db), donc elle survit aux redémarrages/recréations de container.
+Au premier démarrage, si /data/dev.db n’existe pas, le script copie le dev.db embarqué dans l’image.
+DATABASE_URL est forcé vers file:/data/dev.db par défaut.
+Commandes à exécuter sur le serveur Ubuntu :
+
+Depuis la racine du repo, préparer le fichier d’env
+cp .env.example .env
+puis remplir NEXTAUTH_SECRET, NEXTAUTH_URL, clés Google/Stripe si utilisées
+Build + run production
+docker compose -f docker-compose.prod.yml --env-file .env up -d --build
+
+Vérifier
+docker compose -f docker-compose.prod.yml ps
+docker compose -f docker-compose.prod.yml logs -f maelstrom
+
+Ouvrir l’app
+http://IP_DU_SERVEUR:3000
+
+Option maintenance utile :
+
+Sauvegarde du volume SQLite
+docker run --rm -v maelstrom_sqlite_data:/data -v "$PWD":/backup alpine sh -c "cp /data/dev.db /backup/dev.db.bak"
+GPT-5.3-Codex • 0.9x
