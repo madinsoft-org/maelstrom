@@ -1,8 +1,10 @@
-version: "3.8"
+version: '3.8'
 
 services:
   maelstrom:
-    image: maelstrom:${GIT_SHA}
+    image: maelstrom:${IMAGE_TAG:-latest}
+    networks:
+      - public
     environment:
       NODE_ENV: production
       PORT: 3000
@@ -19,10 +21,16 @@ services:
       - maelstrom_sqlite_data:/data
     deploy:
       replicas: 1
-      restart_policy:
-        condition: on-failure
-    ports:
-      - "3000:3000"
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.maelstrom.rule=Host(`madinapp.fr`) && PathPrefix(`/maelstrom`)"
+        - "traefik.http.routers.maelstrom.entrypoints=websecure"
+        - "traefik.http.routers.maelstrom.tls.certresolver=myresolver"
+        - "traefik.http.services.maelstrom.loadbalancer.server.port=3000"
+
+networks:
+  public:
+    external: true
 
 volumes:
   maelstrom_sqlite_data:
