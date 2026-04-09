@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  basePath: "/maelstrom/api/auth",
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
