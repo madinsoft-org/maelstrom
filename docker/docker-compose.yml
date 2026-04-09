@@ -34,3 +34,4 @@ networks:
 
 volumes:
   maelstrom_sqlite_data:
+
