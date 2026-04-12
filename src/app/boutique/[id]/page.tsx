@@ -65,12 +65,20 @@ export default function ProductDetailPage() {
 
       <div className="grid md:grid-cols-2 gap-12">
         {/* Image */}
-        <div className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden">
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300">
-            <span className="text-gray-400 text-lg font-medium">
-              {product.name}
-            </span>
-          </div>
+        <div className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden relative">
+          {product.image ? (
+            <img
+              src={`/maelstrom${product.image}`}
+              alt={product.name}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300">
+              <span className="text-gray-400 text-lg font-medium">
+                {product.name}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Product info */}

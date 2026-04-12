@@ -114,22 +114,28 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {[
-              { name: "Robes", slug: "robes", icon: "👗" },
-              { name: "Vestes & Manteaux", slug: "vestes", icon: "🧥" },
-              { name: "Pantalons", slug: "pantalons", icon: "👖" },
-              { name: "Tops", slug: "tops", icon: "👚" },
-              { name: "Jupes", slug: "jupes", icon: "💃" },
-              { name: "Chemises", slug: "chemises", icon: "🔘" },
+              { name: "Robes", slug: "robes", icon: "👗", bg: "/images/products/robe-tempete.jpg" },
+              { name: "Vestes & Manteaux", slug: "vestes", icon: "🧥", bg: "/images/products/veste-cyclone.jpg" },
+              { name: "Pantalons", slug: "pantalons", icon: "👖", bg: "/images/products/pantalon-courant.jpg" },
+              { name: "Tops", slug: "tops", icon: "👚", bg: "/images/products/top-brise.jpg" },
+              { name: "Jupes", slug: "jupes", icon: "💃", bg: "/images/products/jupe-tourbillon.jpg" },
+              { name: "Chemises", slug: "chemises", icon: "🔘", bg: "/images/products/chemise-zephyr.jpg" },
+              { name: "Cravattes", slug: "cravattes", icon: "👔", bg: "/images/products/cravattes/cravatte-01.jpeg" },
+              { name: "Pochettes", slug: "pochettes", icon: "🧣", bg: "/images/products/pochettes/pochette-01.jpeg" },
             ].map((cat) => (
               <Link
                 key={cat.slug}
                 href={`/boutique?category=${cat.slug}`}
                 className="group relative aspect-[4/3] bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center hover:ring-2 hover:ring-gray-900 transition-all"
               >
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/70 to-transparent" />
-                <div className="relative text-center z-10">
+                {cat.bg && (
+                  <img src={`/maelstrom${cat.bg}`} alt={cat.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                )}
+                <div className="absolute inset-0 bg-gray-900/20 group-hover:bg-gray-900/40 transition-colors" />
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-transparent to-transparent" />
+                <div className="relative text-center z-10 mt-auto pb-6">
                   <span className="text-4xl mb-2 block">{cat.icon}</span>
                   <span className="text-white font-medium text-sm uppercase tracking-wider">
                     {cat.name}

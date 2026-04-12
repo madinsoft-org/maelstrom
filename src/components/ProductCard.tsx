@@ -25,10 +25,17 @@ export default function ProductCard({ product }: { product: Product }) {
   return (
     <Link href={`/boutique/${product.slug}`} className="group block">
       <div className="relative aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden mb-4">
-        {/* Placeholder image */}
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-          <span className="text-gray-400 text-sm font-medium">{product.name}</span>
-        </div>
+        {product.image ? (
+          <img
+            src={`/maelstrom${product.image}`}
+            alt={product.name}
+            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+            <span className="text-gray-400 text-sm font-medium text-center px-4">{product.name}</span>
+          </div>
+        )}
         {/* Quick add button */}
         <button
           onClick={handleQuickAdd}
