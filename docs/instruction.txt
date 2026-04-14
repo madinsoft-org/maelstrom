@@ -38,3 +38,32 @@ Sauvegarde du volume SQLite
 docker run --rm -v maelstrom_sqlite_data:/data -v "$PWD":/backup alpine sh -c "cp /data/dev.db /backup/dev.db.bak"
 GPT-5.3-Codex • 0.9x
 
+___________________________________________________________________________________
+Schema — Ajout d'un champ role ("USER" / "ADMIN") au modèle User dans schema.prisma.
+
+Auth — Le rôle est injecté dans le JWT et la session via les callbacks dans auth.ts.
+
+Pages admin créées :
+
+/admin — Tableau de bord avec stats (produits, utilisateurs, commandes, revenus)
+/admin/produits — Liste des produits avec suppression
+/admin/produits/nouveau — Formulaire de création
+/admin/produits/[id] — Formulaire d'édition
+/admin/utilisateurs — Gestion des utilisateurs (promouvoir/rétrograder admin, supprimer)
+/admin/commandes — Vue des commandes
+API routes :
+
+POST/GET /api/admin/products — Lister/créer des produits
+PUT/DELETE /api/admin/products/[id] — Modifier/supprimer un produit
+PUT/DELETE /api/admin/users/[id] — Modifier rôle/supprimer un utilisateur
+POST /api/admin/upload — Upload d'images (JPEG, PNG, WEBP, GIF, max 5 Mo)
+Composants :
+
+AdminSidebar.tsx — Sidebar de navigation admin
+ProductForm.tsx — Formulaire produit avec upload d'images
+Layout admin — Layout dédié (sans Navbar/Footer du site)
+Sécurité : Toutes les routes et le layout vérifient que l'utilisateur est connecté et a le rôle ADMIN. Le lien "Administration" dans le Navbar.tsx n'apparaît que pour les admins.
+
+Sécurité : Toutes les routes et le layout vérifient que l'utilisateur est connecté et a le rôle ADMIN. Le lien "Administration" dans le Navbar.tsx n'apparaît que pour les admins.
+
+Compte admin : admin@maelstrom.fr / admin123 (créé via le script create-admin.ts).

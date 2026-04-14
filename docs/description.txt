@@ -1,4 +1,5 @@
 Cravate :
+
 la cravate des sorciere
 couleur : violet
 taille : 149 cm
@@ -8,6 +9,7 @@ une broche
 un pache cousue et peint a la main
 2 pinc épingler
 matieraux : polyester
+
 cravate a vision
 couleur : gris rose
 taille : 153 cm
@@ -15,6 +17,7 @@ customisation :
 un pache cousue et peint a la main
 9 perle pierre
 matieraux : soint naturellle peint a la main
+
 sublime
 couleur : bleu foncé et blanc
 taille : 142 cm
@@ -22,6 +25,7 @@ customisation :
 2 pinc épingler
 2 pache cousue et peint a la main
 matieraux : polyester
+
 vangogeu
 couleur : different bleu
 taille : 139
@@ -30,6 +34,7 @@ peint a la main
 une broche
 1 pinc épingler
 matieraux : polyester
+
 école des chat
 couleur : noir, gris et blanc
 taille : 155 cm
@@ -43,6 +48,7 @@ taille : 145 cm
 customisation :
 3 pache cousue
 matieraux :polyester
+
 les pastaique
 couleur : rouge
 taille : 149 cm
@@ -56,6 +62,7 @@ taille : 141 cm
 customisation :
 peint a la main
 matieraux : polyester
+
 serpentard
 couleur : gris, vert, violet et bleu
 taille : 146 cm
@@ -66,6 +73,8 @@ matieraux : polyester
 couleur :
 taille :
 customisationmatieraux :
+
+
 :
 coton démaquient :
 taille : 11 cm x 7 cm

@@ -1,14 +1,29 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useState, useEffect } from "react";
 import ProductCard from "@/components/ProductCard";
-import { products, categories } from "@/lib/data";
+import type { Product } from "@/types";
 import { SlidersHorizontal } from "lucide-react";
 
 function BoutiqueContent() {
   const searchParams = useSearchParams();
   const selectedCategory = searchParams.get("category");
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    fetch("/maelstrom/api/products")
+      .then((r) => r.json())
+      .then(setProducts)
+      .catch(() => {});
+  }, []);
+
+  const categories = Array.from(
+    new Set(products.map((p) => p.category))
+  ).map((slug) => ({
+    name: slug.charAt(0).toUpperCase() + slug.slice(1),
+    slug,
+  }));
 
   const filteredProducts = selectedCategory
     ? products.filter((p) => p.category === selectedCategory)

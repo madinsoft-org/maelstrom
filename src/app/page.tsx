@@ -1,9 +1,11 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
-import { products, services } from "@/lib/data";
+import { services } from "@/lib/data";
 import { useCartStore } from "@/lib/cart";
+import type { Product } from "@/types";
 import {
   ArrowRight,
   Scissors,
@@ -15,8 +17,16 @@ import {
 
 export default function Home() {
   const addItem = useCartStore((s) => s.addItem);
+  const [products, setProducts] = useState<Product[]>([]);
   const featuredProducts = products.filter((p) => p.featured);
   const featuredServices = services.slice(0, 4);
+
+  useEffect(() => {
+    fetch("/maelstrom/api/products")
+      .then((r) => r.json())
+      .then(setProducts)
+      .catch(() => {});
+  }, []);
 
   return (
     <>
@@ -115,16 +125,19 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            {[
-              { name: "Robes", slug: "robes", icon: "👗", bg: "/images/products/robe-tempete.jpg" },
-              { name: "Vestes & Manteaux", slug: "vestes", icon: "🧥", bg: "/images/products/veste-cyclone.jpg" },
-              { name: "Pantalons", slug: "pantalons", icon: "👖", bg: "/images/products/pantalon-courant.jpg" },
-              { name: "Tops", slug: "tops", icon: "👚", bg: "/images/products/top-brise.jpg" },
-              { name: "Jupes", slug: "jupes", icon: "💃", bg: "/images/products/jupe-tourbillon.jpg" },
-              { name: "Chemises", slug: "chemises", icon: "🔘", bg: "/images/products/chemise-zephyr.jpg" },
-              { name: "Cravattes", slug: "cravattes", icon: "👔", bg: "/images/products/cravattes/cravatte-01.jpeg" },
-              { name: "Pochettes", slug: "pochettes", icon: "🧣", bg: "/images/products/pochettes/pochette-01.jpeg" },
-            ].map((cat) => (
+            {(() => {
+              const categoryMap = new Map<string, { name: string; slug: string; bg: string }>();
+              products.forEach((p) => {
+                if (!categoryMap.has(p.category)) {
+                  categoryMap.set(p.category, {
+                    name: p.category.charAt(0).toUpperCase() + p.category.slice(1),
+                    slug: p.category,
+                    bg: p.image,
+                  });
+                }
+              });
+              return Array.from(categoryMap.values());
+            })().map((cat) => (
               <Link
                 key={cat.slug}
                 href={`/boutique?category=${cat.slug}`}
@@ -136,7 +149,6 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gray-900/20 group-hover:bg-gray-900/40 transition-colors" />
                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-transparent to-transparent" />
                 <div className="relative text-center z-10 mt-auto pb-6">
-                  <span className="text-4xl mb-2 block">{cat.icon}</span>
                   <span className="text-white font-medium text-sm uppercase tracking-wider">
                     {cat.name}
                   </span>

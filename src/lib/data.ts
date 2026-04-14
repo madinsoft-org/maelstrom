@@ -576,18 +576,12 @@ export const services: Service[] = [
   },
 ];
 
-export const categories = [
-  { name: "Robes", slug: "robes" },
-  { name: "Vestes", slug: "vestes" },
-  { name: "Pantalons", slug: "pantalons" },
-  { name: "Tops", slug: "tops" },
-  { name: "Jupes", slug: "jupes" },
-  { name: "Chemises", slug: "chemises" },
-  { name: "Manteaux", slug: "manteaux" },
-  { name: "Combinaisons", slug: "combinaisons" },
-  { name: "Cravattes", slug: "cravattes" },
-  { name: "Pochettes", slug: "pochettes" },
-];
+export const categories = Array.from(
+  new Set(products.map((p) => p.category))
+).map((slug) => ({
+  name: slug.charAt(0).toUpperCase() + slug.slice(1),
+  slug,
+}));
 
 export const serviceCategories = [
   { name: "Ourlets", slug: "ourlets" },
