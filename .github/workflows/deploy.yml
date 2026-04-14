@@ -9,7 +9,8 @@ on:
 jobs:
   build-and-deploy-dev:
     if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && contains(github.event.head_commit.message, '[deploy]'))
-    runs-on: [self-hosted, mael-runner]
+    runs-on: 
+      labels: self-hosted
 
     steps:
       - name: Checkout repository
