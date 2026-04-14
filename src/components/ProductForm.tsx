@@ -119,13 +119,13 @@ export default function ProductForm({ product }: ProductFormProps) {
       sizes: JSON.stringify(
         form.sizes
           .split(",")
-          .map((s) => s.trim())
+          .map((s: string) => s.trim())
           .filter(Boolean)
       ),
       colors: JSON.stringify(
         form.colors
           .split(",")
-          .map((c) => c.trim())
+          .map((c: string) => c.trim())
           .filter(Boolean)
       ),
       taille: form.taille,
