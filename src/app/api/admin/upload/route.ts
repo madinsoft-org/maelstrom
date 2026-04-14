@@ -67,7 +67,13 @@ export async function POST(request: Request) {
 
     const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
     const safeName = crypto.randomUUID() + "." + ext;
-    const uploadDir = path.join(process.cwd(), "public", "images", "products", safeCategory);
+
+    // In production with Docker, persist uploads in /data/uploads (volume).
+    // In dev, write to public/images/products.
+    const isProd = process.env.NODE_ENV === "production";
+    const uploadDir = isProd
+      ? path.join("/data", "uploads", safeCategory)
+      : path.join(process.cwd(), "public", "images", "products", safeCategory);
     await mkdir(uploadDir, { recursive: true });
 
     const filePath = path.join(uploadDir, safeName);
