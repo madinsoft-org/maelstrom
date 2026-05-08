@@ -12,6 +12,10 @@ RUN npm ci
 FROM node:20-bookworm-slim AS builder
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates && rm -rf /var/lib/apt/lists/*
+
+ENV DATABASE_URL="file:./dev.db"
+
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
