@@ -1,9 +1,11 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import ProductCard from "@/components/ProductCard";
-import { products, services } from "@/lib/data";
+import { services } from "@/lib/data";
 import { useCartStore } from "@/lib/cart";
+import type { Product } from "@/types";
 import {
   ArrowRight,
   Scissors,
@@ -15,8 +17,16 @@ import {
 
 export default function Home() {
   const addItem = useCartStore((s) => s.addItem);
+  const [products, setProducts] = useState<Product[]>([]);
   const featuredProducts = products.filter((p) => p.featured);
   const featuredServices = services.slice(0, 4);
+
+  useEffect(() => {
+    fetch("/maelstrom/api/products")
+      .then((r) => r.json())
+      .then(setProducts)
+      .catch(() => {});
+  }, []);
 
   return (
     <>
@@ -114,23 +124,31 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-            {[
-              { name: "Robes", slug: "robes", icon: "👗" },
-              { name: "Vestes & Manteaux", slug: "vestes", icon: "🧥" },
-              { name: "Pantalons", slug: "pantalons", icon: "👖" },
-              { name: "Tops", slug: "tops", icon: "👚" },
-              { name: "Jupes", slug: "jupes", icon: "💃" },
-              { name: "Chemises", slug: "chemises", icon: "🔘" },
-            ].map((cat) => (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            {(() => {
+              const categoryMap = new Map<string, { name: string; slug: string; bg: string }>();
+              products.forEach((p) => {
+                if (!categoryMap.has(p.category)) {
+                  categoryMap.set(p.category, {
+                    name: p.category.charAt(0).toUpperCase() + p.category.slice(1),
+                    slug: p.category,
+                    bg: p.image,
+                  });
+                }
+              });
+              return Array.from(categoryMap.values());
+            })().map((cat) => (
               <Link
                 key={cat.slug}
                 href={`/boutique?category=${cat.slug}`}
                 className="group relative aspect-[4/3] bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center hover:ring-2 hover:ring-gray-900 transition-all"
               >
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/70 to-transparent" />
-                <div className="relative text-center z-10">
-                  <span className="text-4xl mb-2 block">{cat.icon}</span>
+                {cat.bg && (
+                  <img src={`/maelstrom${cat.bg}`} alt={cat.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                )}
+                <div className="absolute inset-0 bg-gray-900/20 group-hover:bg-gray-900/40 transition-colors" />
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-transparent to-transparent" />
+                <div className="relative text-center z-10 mt-auto pb-6">
                   <span className="text-white font-medium text-sm uppercase tracking-wider">
                     {cat.name}
                   </span>

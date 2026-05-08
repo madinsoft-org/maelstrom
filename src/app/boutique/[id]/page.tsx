@@ -1,10 +1,10 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { products } from "@/lib/data";
 import { useCartStore } from "@/lib/cart";
+import type { Product } from "@/types";
 import {
   ArrowLeft,
   ShoppingBag,
@@ -16,12 +16,32 @@ import {
 
 export default function ProductDetailPage() {
   const params = useParams();
-  const product = products.find((p) => p.slug === params.id);
   const addItem = useCartStore((s) => s.addItem);
 
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [selectedColor, setSelectedColor] = useState<string>("");
   const [added, setAdded] = useState(false);
+
+  useEffect(() => {
+    fetch("/maelstrom/api/products")
+      .then((r) => r.json())
+      .then((products: Product[]) => {
+        const found = products.find((p) => p.slug === params.id) || null;
+        setProduct(found);
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [params.id]);
+
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-20 text-center text-gray-400">
+        Chargement...
+      </div>
+    );
+  }
 
   if (!product) {
     return (
@@ -65,12 +85,20 @@ export default function ProductDetailPage() {
 
       <div className="grid md:grid-cols-2 gap-12">
         {/* Image */}
-        <div className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden">
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300">
-            <span className="text-gray-400 text-lg font-medium">
-              {product.name}
-            </span>
-          </div>
+        <div className="aspect-[3/4] bg-gray-100 rounded-lg overflow-hidden relative">
+          {product.image ? (
+            <img
+              src={`/maelstrom${product.image}`}
+              alt={product.name}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300">
+              <span className="text-gray-400 text-lg font-medium">
+                {product.name}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Product info */}
@@ -88,6 +116,30 @@ export default function ProductDetailPage() {
           <p className="text-gray-500 leading-relaxed mb-8">
             {product.description}
           </p>
+
+          {/* Product details */}
+          {(product.taille || product.customisation || product.materiaux) && (
+            <div className="mb-8 space-y-2 text-sm">
+              {product.taille && (
+                <div className="flex gap-2">
+                  <span className="font-medium text-gray-900">Taille :</span>
+                  <span className="text-gray-600">{product.taille}</span>
+                </div>
+              )}
+              {product.materiaux && (
+                <div className="flex gap-2">
+                  <span className="font-medium text-gray-900">Matériaux :</span>
+                  <span className="text-gray-600">{product.materiaux}</span>
+                </div>
+              )}
+              {product.customisation && (
+                <div>
+                  <span className="font-medium text-gray-900">Customisation :</span>
+                  <p className="text-gray-600 mt-1 whitespace-pre-line">{product.customisation}</p>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Color selector */}
           <div className="mb-6">

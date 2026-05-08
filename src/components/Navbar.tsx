@@ -11,12 +11,14 @@ import {
   X,
   Scissors,
   Search,
+  Shield,
 } from "lucide-react";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { data: session } = useSession();
   const totalItems = useCartStore((s) => s.totalItems);
+  const isAdmin = (session?.user as Record<string, unknown>)?.role === "ADMIN";
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100">
@@ -94,6 +96,15 @@ export default function Navbar() {
                       {session.user?.name || session.user?.email}
                     </p>
                   </div>
+                  {isAdmin && (
+                    <Link
+                      href="/admin"
+                      className="block w-full text-left px-4 py-2 text-sm text-purple-600 hover:bg-gray-50 font-medium"
+                    >
+                      <Shield size={14} className="inline mr-1" />
+                      Administration
+                    </Link>
+                  )}
                   <button
                     onClick={() => signOut()}
                     className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50"
