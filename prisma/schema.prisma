@@ -40,7 +40,6 @@ model User {
   emailVerified DateTime?
   image         String?
   password      String?
-  role          String    @default("USER")
   accounts      Account[]
   sessions      Session[]
   orders        Order[]
@@ -65,9 +64,6 @@ model Product {
   category    String
   sizes       String      @default("[]")
   colors      String      @default("[]")
-  taille      String      @default("")
-  customisation String    @default("")
-  materiaux   String      @default("")
   inStock     Boolean     @default(true)
   featured    Boolean     @default(false)
   createdAt   DateTime    @default(now())

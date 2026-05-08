@@ -20,9 +20,6 @@ export interface Product {
   category: string;
   sizes: string[];
   colors: string[];
-  taille?: string;
-  customisation?: string;
-  materiaux?: string;
   inStock: boolean;
   featured: boolean;
 }

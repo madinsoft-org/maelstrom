@@ -1,15 +1,13 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState } from "react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 
-function LoginContent() {
+export default function LoginPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -32,13 +30,13 @@ function LoginContent() {
     if (result?.error) {
       setError("Email ou mot de passe incorrect");
     } else {
-      router.push(callbackUrl);
+      router.push("/");
       router.refresh();
     }
   };
 
   const handleGoogleSignIn = () => {
-    signIn("google", { callbackUrl });
+    signIn("google", { callbackUrl: "/" });
   };
 
   return (
@@ -173,19 +171,5 @@ function LoginContent() {
         </p>
       </div>
     </div>
-  );
-}
-
-export default function LoginPage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="min-h-[80vh] flex items-center justify-center text-gray-400">
-          Chargement...
-        </div>
-      }
-    >
-      <LoginContent />
-    </Suspense>
   );
 }
